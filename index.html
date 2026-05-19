@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A little question for you</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #120d1d;
+      --bg-deep: #1a1228;
+      --petal: #df8db6;
+      --lavender: #b39de3;
+      --sage: #8db8aa;
+      --text: #f2eaf7;
+      --text-soft: #beaeca;
+      --white: #211633;
+      --shadow: rgba(8, 5, 12, 0.45);
+      --option-glow: rgba(223, 141, 182, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: "Quicksand", system-ui, sans-serif;
+      background: var(--bg);
+      background-image:
+        radial-gradient(ellipse 120% 80% at 10% 20%, rgba(223, 141, 182, 0.22), transparent 50%),
+        radial-gradient(ellipse 100% 60% at 90% 80%, rgba(179, 157, 227, 0.2), transparent 45%),
+        radial-gradient(ellipse 80% 50% at 50% 100%, rgba(141, 184, 170, 0.18), transparent 50%),
+        linear-gradient(180deg, #0f0a18 0%, #140d20 100%);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hearts-layer {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .heart {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: radial-gradient(circle at 30% 30%, #ffd6e9, #d66ea0);
+      transform: rotate(45deg);
+      transform-origin: center;
+      border-radius: 4px;
+      opacity: 0.7;
+      animation: floatUp 8s linear infinite;
+      box-shadow: 0 4px 10px rgba(223, 141, 182, 0.35);
+    }
+
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: radial-gradient(circle at 30% 30%, #ffd6e9, #d66ea0);
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -7px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -7px;
+      top: 0;
+    }
+
+    .heart--soft {
+      opacity: 0.35;
+      transform: scale(0.8) rotate(45deg);
+      animation-duration: 10s;
+    }
+
+    .heart--bright {
+      opacity: 0.9;
+      transform: scale(1.05) rotate(45deg);
+      animation-duration: 6s;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(45deg) scale(1);
+      }
+      50% {
+        transform: translateY(-40vh) rotate(45deg) scale(1.05);
+      }
+      100% {
+        transform: translateY(-80vh) rotate(45deg) scale(0.9);
+        opacity: 0;
+      }
+    }
+
+    .card {
+      width: min(420px, 100%);
+      background: linear-gradient(160deg, rgba(36, 24, 56, 0.95), rgba(27, 18, 41, 0.95));
+      border-radius: 28px;
+      padding: 2.25rem 1.75rem 2rem;
+      box-shadow:
+        0 8px 32px var(--shadow),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+      position: relative;
+      z-index: 1;
+    }
+
+    .step-indicator {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin: 0 0 1.25rem;
+      color: var(--text);
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .btn-option {
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.9rem 1.1rem;
+      border: none;
+      border-radius: 16px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2b1d44, #201634);
+      color: var(--text);
+      box-shadow: 0 2px 10px var(--shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
+    }
+
+    .btn-option::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 70%;
+      height: 100%;
+      transform: skewX(-24deg);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.32), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-option:hover {
+      transform: translateY(-4px) scale(1.01);
+      filter: brightness(1.07);
+      box-shadow: 0 8px 20px var(--shadow), 0 0 22px var(--option-glow);
+    }
+
+    .btn-option:hover::after {
+      left: 140%;
+    }
+
+    .btn-option:active {
+      transform: translateY(0);
+    }
+
+    .btn-option:nth-child(1) { border-left: 4px solid var(--petal); }
+    .btn-option:nth-child(2) { border-left: 4px solid var(--lavender); }
+    .btn-option:nth-child(3) { border-left: 4px solid var(--sage); }
+
+    .final-zone {
+      margin-top: 0.5rem;
+    }
+
+    .final-actions {
+      position: relative;
+      min-height: 120px;
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-yes {
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 700;
+      padding: 0.95rem 2rem;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--petal), #efb5d2);
+      color: #2a1731;
+      box-shadow: 0 4px 16px rgba(223, 141, 182, 0.45);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 2;
+    }
+
+    .btn-yes:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 22px rgba(223, 141, 182, 0.55);
+    }
+
+    .btn-no {
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.85rem 1.6rem;
+      border: 2px solid var(--lavender);
+      border-radius: 999px;
+      cursor: pointer;
+      background: #2a1d40;
+      color: var(--text-soft);
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      transition: left 0.12s ease-out, top 0.12s ease-out;
+      z-index: 1;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Offset no button from center so yes stays tappable */
+    .final-actions.has-no .btn-no {
+      left: calc(50% + 90px);
+      top: 50%;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .celebrate {
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .celebrate h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .celebrate p {
+      color: var(--text-soft);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .sparkle {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .card.love-pop {
+      animation: lovePop 650ms ease-out;
+    }
+
+    @keyframes lovePop {
+      0% {
+        transform: scale(1);
+      }
+      40% {
+        transform: scale(1.06);
+      }
+      65% {
+        transform: scale(0.98);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .tiny-hint {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-top: 1rem;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    .yes-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 3;
+    }
+
+    .yes-overlay.active {
+      animation: overlayFade 2.2s ease-out forwards;
+    }
+
+    .yes-overlay::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 25% 35%, rgba(223, 141, 182, 0.28), transparent 45%),
+        radial-gradient(circle at 70% 65%, rgba(179, 157, 227, 0.26), transparent 42%),
+        radial-gradient(circle at 52% 45%, rgba(255, 255, 255, 0.18), transparent 38%);
+      animation: overlayPulse 2.4s ease-out;
+    }
+
+    .yes-ring {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 28px;
+      height: 28px;
+      border: 2px solid rgba(255, 218, 234, 0.75);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      animation: ringBloom 1.6s ease-out forwards;
+    }
+
+    .yes-dog-wrap {
+      width: min(280px, 84%);
+      margin: 0.9rem auto 0.15rem;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow:
+        0 10px 24px rgba(8, 5, 12, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+      transform: translateY(18px) scale(0.9);
+      opacity: 0;
+    }
+
+    .yes-dog-wrap.active {
+      animation: dogEntrance 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
+    .yes-dog-img {
+      width: 100%;
+      display: block;
+      transform-origin: center;
+      animation: dogFloat 3s ease-in-out infinite;
+    }
+
+    .yes-dog-fallback {
+      margin-top: 0.5rem;
+      font-size: 0.82rem;
+      color: var(--text-soft);
+      text-align: center;
+    }
+
+    @keyframes overlayFade {
+      0% { opacity: 0; }
+      25% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes overlayPulse {
+      0% { transform: scale(0.96); opacity: 0.5; }
+      100% { transform: scale(1.05); opacity: 1; }
+    }
+
+    @keyframes ringBloom {
+      0% { width: 28px; height: 28px; opacity: 1; }
+      100% { width: 420px; height: 420px; opacity: 0; }
+    }
+
+    @keyframes dogEntrance {
+      0% { opacity: 0; transform: translateY(18px) scale(0.9) rotate(-1.5deg); }
+      70% { opacity: 1; transform: translateY(-4px) scale(1.03) rotate(1deg); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+    }
+
+    @keyframes dogFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts-layer" id="heartsLayer"></div>
+  <div class="yes-overlay" id="yesOverlay"></div>
+  <main class="card" id="app">
+    <!-- Step 1 -->
+    <section class="step" data-step="0">
+      <p class="step-indicator">Prelude 1 / 4</p>
+      <h1>Manual or automatic gurll?</h1>
+      <div class="options">
+        <button type="button" class="btn-option" data-next>Manual</button>
+        <button type="button" class="btn-option" data-next>Automatic</button>
+        <button type="button" class="btn-option" data-next>Neither</button>
+      </div>
+    </section>
+
+    <!-- Step 2 -->
+    <section class="step hidden" data-step="1">
+      <p class="step-indicator">Prelude 2 / 4</p>
+      <h1>Mountains or beaches?</h1>
+      <div class="options">
+        <button type="button" class="btn-option" data-next>sigma mountains </button>
+        <button type="button" class="btn-option" data-next>alpha beaches</button>
+        <button type="button" class="btn-option" data-next>kambal mei ninni A.C on krke</button>
+      </div>
+    </section>
+
+    <!-- Step 3 -->
+    <section class="step hidden" data-step="2">
+      <p class="step-indicator">Prelude 3 / 4</p>
+      <h1>Stay logical or get delusional?</h1>
+      <div class="options">
+        <button type="button" class="btn-option" data-next>logic wins</button>
+        <button type="button" class="btn-option" data-next>delusional af</button>
+        <button type="button" class="btn-option" data-next>i'm just a retard bro-</button>
+      </div>
+    </section>
+
+    <!-- Step 4 -->
+    <section class="step hidden" data-step="3">
+      <p class="step-indicator">ALR FINAL QUESTION NO BS</p>
+      <h1>Are you from Tennessee? </br> cuz you're the only TEN I see❤️‍🩹 Pleasee date mee 🙏🙏🙏</h1>
+      <div class="final-zone final-actions has-no" id="finalActions">
+        <button type="button" class="btn-yes" id="btnYes">Yes</button>
+        <button type="button" class="btn-no" id="btnNo">No</button>
+      </div>
+      <p class="tiny-hint" id="noHint">(The &ldquo;No&rdquo; is shy tonight... it might run away.)</p>
+    </section>
+
+    <!-- Success -->
+    <section class="step hidden celebrate" data-step="success">
+      <div class="sparkle">✿ ◡ ✿</div>
+      <h1>Yayayyyyyyaayayyyy</h1>
+      <p>let's goooooo chattttt !!</p>
+      <div class="yes-dog-wrap hidden" id="yesDogWrap">
+        <img
+          class="yes-dog-img"
+          id="yesDogImg"
+          src="./dog1.jpg"
+          alt="Happy dog holding a flower"
+        />
+      </div>
+      <p class="yes-dog-fallback hidden" id="yesDogFallback">
+        Add the image as <code>date-me/assets/yes-dog.png</code> to display it here.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const steps = document.querySelectorAll(".step[data-step]");
+      const nextBtns = document.querySelectorAll("[data-next]");
+      const finalActions = document.getElementById("finalActions");
+      const btnYes = document.getElementById("btnYes");
+      const btnNo = document.getElementById("btnNo");
+      const noHint = document.getElementById("noHint");
+      const heartsLayer = document.getElementById("heartsLayer");
+      const card = document.getElementById("app");
+      const yesOverlay = document.getElementById("yesOverlay");
+      const yesDogWrap = document.getElementById("yesDogWrap");
+      const yesDogImg = document.getElementById("yesDogImg");
+      const yesDogFallback = document.getElementById("yesDogFallback");
+
+      let current = 0;
+
+      function showStep(index) {
+        steps.forEach((el) => {
+          const s = el.getAttribute("data-step");
+          if (index === "success") {
+            el.classList.toggle("hidden", s !== "success");
+          } else {
+            el.classList.toggle("hidden", Number(s) !== index);
+          }
+        });
+      }
+
+      nextBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          current += 1;
+          if (current <= 3) showStep(current);
+        });
+      });
+
+      function createHeart(options = {}) {
+        if (!heartsLayer) return;
+        const heart = document.createElement("span");
+        heart.className = "heart " + (options.variant || "");
+
+        const size = options.size || (10 + Math.random() * 10);
+        heart.style.width = size + "px";
+        heart.style.height = size + "px";
+
+        const startX = options.x != null ? options.x : Math.random() * 100;
+        const startY = options.y != null ? options.y : 100 + Math.random() * 10;
+
+        heart.style.left = startX + "vw";
+        heart.style.bottom = startY + "px";
+
+        const duration = options.duration || (6 + Math.random() * 6);
+        heart.style.animationDuration = duration + "s";
+        heart.style.animationDelay = (options.delay || Math.random() * 4) + "s";
+
+        heartsLayer.appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, duration * 1000 + 4000);
+      }
+
+      // Gentle background hearts
+      if (heartsLayer) {
+        for (let i = 0; i < 16; i++) {
+          createHeart({
+            variant: Math.random() > 0.5 ? "heart--soft" : "",
+            x: Math.random() * 100,
+            y: -20 - Math.random() * 60,
+            delay: Math.random() * 6,
+            duration: 8 + Math.random() * 6,
+          });
+        }
+
+        setInterval(() => {
+          createHeart({
+            variant: "heart--soft",
+            x: Math.random() * 100,
+            y: -20,
+          });
+        }, 1800);
+      }
+
+      function setupYesImageFallbacks() {
+        if (!yesDogImg) return;
+        const sources = (yesDogImg.dataset.srcList || "")
+          .split("|")
+          .map((s) => s.trim())
+          .filter(Boolean);
+
+        let sourceIndex = Math.max(0, sources.indexOf(yesDogImg.getAttribute("src") || ""));
+        if (sourceIndex === -1) sourceIndex = 0;
+
+        yesDogImg.addEventListener("error", () => {
+          sourceIndex += 1;
+          if (sourceIndex < sources.length) {
+            yesDogImg.src = sources[sourceIndex];
+          } else if (yesDogFallback) {
+            yesDogFallback.classList.remove("hidden");
+          }
+        });
+      }
+
+      setupYesImageFallbacks();
+
+      function celebrateYesMoment() {
+        if (yesOverlay) {
+          yesOverlay.innerHTML = '<span class="yes-ring"></span>';
+          yesOverlay.classList.remove("active");
+          void yesOverlay.offsetWidth;
+          yesOverlay.classList.add("active");
+        }
+
+        if (yesDogWrap) {
+          yesDogWrap.classList.remove("hidden");
+          yesDogWrap.classList.remove("active");
+          void yesDogWrap.offsetWidth;
+          yesDogWrap.classList.add("active");
+        }
+
+        // Extra dreamy hearts for the "yes" moment.
+        if (heartsLayer) {
+          for (let i = 0; i < 22; i++) {
+            createHeart({
+              variant: i % 2 ? "heart--bright" : "heart--soft",
+              x: 50 + (Math.random() - 0.5) * 52,
+              y: 8 + Math.random() * 12,
+              duration: 3.2 + Math.random() * 2.3,
+            });
+          }
+        }
+
+      }
+
+      btnYes.addEventListener("click", () => {
+        // Little pop animation on the card
+        if (card) {
+          card.classList.remove("love-pop");
+          // force reflow so animation restarts
+          void card.offsetWidth;
+          card.classList.add("love-pop");
+        }
+
+        // Heart burst when she says yes
+        if (heartsLayer) {
+          const centerX = 50;
+          for (let i = 0; i < 18; i++) {
+            const spread = (Math.random() - 0.5) * 40;
+            createHeart({
+              variant: "heart--bright",
+              x: centerX + spread,
+              y: 10 + Math.random() * 10,
+              duration: 4 + Math.random() * 2,
+            });
+          }
+        }
+
+        showStep("success");
+        celebrateYesMoment();
+      });
+
+      const padding = 16;
+      let noClicks = 0;
+
+      function moveNoAway(clientX, clientY) {
+        const rect = btnNo.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = clientX - cx;
+        const dy = clientY - cy;
+        const dist = Math.hypot(dx, dy);
+        const trigger = Math.max(rect.width, rect.height) * 0.85;
+
+        if (dist < trigger + 40) {
+          const parent = finalActions.getBoundingClientRect();
+          const w = btnNo.offsetWidth;
+          const h = btnNo.offsetHeight;
+          const maxLeft = parent.width - w - padding;
+          const maxTop = parent.height - h - padding;
+
+          let left = Math.random() * Math.max(0, maxLeft) + padding;
+          let top = Math.random() * Math.max(0, maxTop) + padding;
+
+          btnNo.style.left = left + "px";
+          btnNo.style.top = top + "px";
+          btnNo.style.transform = "none";
+
+          noClicks++;
+          if (noClicks === 4 && noHint) {
+            noHint.textContent = "Okay, okay... you're fearless. The Yes button is glowing for a reason.";
+          }
+        }
+      }
+
+      document.addEventListener("pointermove", (e) => {
+        const step4 = document.querySelector('[data-step="3"]');
+        if (!step4 || step4.classList.contains("hidden")) return;
+        moveNoAway(e.clientX, e.clientY);
+      });
+
+      btnNo.addEventListener("click", (e) => {
+        e.preventDefault();
+        moveNoAway(
+          btnNo.getBoundingClientRect().left - 50,
+          btnNo.getBoundingClientRect().top
+        );
+      });
+    })();
+  </script>
+</body>
+</html>
